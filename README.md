@@ -10,9 +10,13 @@ $e^{\pi i}$
 
 $\sum_{i=1}^n a_n = 10$
 
-this is not displayed on Github
+This will not correctly displayed on Github..
 
 
 # usage
 
-https://ryought.app/github-md-math-renderer/index.html
+But see:
+
+https://ryought.app/github-md-math-renderer#https://raw.githubusercontent.com/ryought/github-md-math-renderer/master/README.md
+
+You will see MathJax.
