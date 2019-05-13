@@ -49,6 +49,9 @@ function getIdentifier(text) {
     if (!text.includes(word)) return word;
   }
 }
+function reverse(s) {
+  return s.split('').reverse().join('');
+}
 
 function main(){
   // ルーティング
@@ -80,13 +83,14 @@ function main(){
     // $と$で挟まれている部分をidentifier(ユニークなワード)で置き換える
     // $の中に_が2回出てくると、イタリックにする処理が先行してしまうので。
     var identifier = getIdentifier(wraped);
-    var mathMasked = wraped.split(/(?<!\\|$)\$/).reduce(function(sum, str, i) {
+    var tokenized = reverse(wraped).split(/\$(?!\\)/).map(reverse).reverse()
+    var mathMasked = tokenized.reduce(function(sum, str, i) {
       return i % 2 === 0 ? sum + str : sum + identifier;
     });
     // html変換
     var html = marked(mathMasked);
     // identifierの単語を元に戻す
-    var htmlWithMath = wraped.split(/(?<!\\|$)\$/).forEach(function(x, i) {
+    var htmlWithMath = tokenized.forEach(function(x, i) {
       if (i % 2 === 1) html = html.replace(identifier, '$' + x + '$')
     })
     // 退避したlatexタグを$$で包み直す
