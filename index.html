@@ -78,6 +78,7 @@ function main(){
                sum + PREFIX + str + SUFFIX;
       }, "");
     // $と$で挟まれている部分をidentifier(ユニークなワード)で置き換える
+    // $の中に_が2回出てくると、イタリックにする処理が先行してしまうので。
     var identifier = getIdentifier(wraped);
     var mathMasked = wraped.split(/(?<!\\|$)\$/).reduce(function(sum, str, i) {
       return i % 2 === 0 ? sum + str : sum + identifier;
