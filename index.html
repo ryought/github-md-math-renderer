@@ -43,6 +43,13 @@ marked.setOptions({
   smartypants: false
 });
 
+function getIdentifier(text) {
+  while (true) {
+    var word = Math.random().toString(32).substring(2);
+    if (!text.includes(word)) return word;
+  }
+}
+
 function main(){
   // ルーティング
   var name = "";
@@ -56,7 +63,7 @@ function main(){
   get(name).catch(function(){
     return Promise.resolve("# 404 page not found");
   }).then(function(text){
-    // markedにlatexタグ食わせると&<>とかがエスケープされるので<pre />で包んで退避
+    // markedにlatexタグ食わせると<>とかがエスケープされるので<pre />で包んで退避
     // ちなみに```mathとかで<pre><code class="lang-math">になったのはエスケープされるので注意
     var PREFIX = "<pre><code class=\"lang-math\">";
     var SUFFIX = "</code></pre>";
@@ -70,7 +77,17 @@ function main(){
                sum + str :
                sum + PREFIX + str + SUFFIX;
       }, "");
-    var html = marked(wraped);
+    // $と$で挟まれている部分をidentifier(ユニークなワード)で置き換える
+    var identifier = getIdentifier(wraped);
+    var mathMasked = wraped.split(/(?<!\\|$)\$/).reduce(function(sum, str, i) {
+      return i % 2 === 0 ? sum + str : sum + identifier;
+    });
+    // html変換
+    var html = marked(mathMasked);
+    // identifierの単語を元に戻す
+    var htmlWithMath = wraped.split(/(?<!\\|$)\$/).forEach(function(x, i) {
+      if (i % 2 === 1) html = html.replace(identifier, '$' + x + '$')
+    })
     // 退避したlatexタグを$$で包み直す
     var _html = html;
     var tuple = null;
